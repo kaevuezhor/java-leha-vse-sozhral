@@ -142,24 +142,20 @@ public class LehaGame_large extends JPanel implements KeyListener, Runnable {
 
     private void applyFoodEffect(FoodType type) {
         switch (type) {
-            case HEALTHY:
+            case HEALTHY -> {
                 totalCalories += 150;
                 playerSize += 2;
-                break;
-            case JUNK:
+            }
+            case JUNK -> {
                 totalCalories += 250;
                 playerSize += 15;
-                break;
-            case POISON:
+            }
+            case POISON -> {
                 lives = Math.max(0, lives - 1);
                 playerSize = Math.max(MIN_SIZE, playerSize - 20);
-                break;
-            case ENERGY:
-                totalCalories += 600;
-                break;
-            case ANTIDOTE:
-                lives = Math.min(3, lives + 1);
-                break;
+            }
+            case ENERGY -> totalCalories += 600;
+            case ANTIDOTE -> lives = Math.min(3, lives + 1);
         }
         playerSize = Math.min(MAX_SIZE, playerSize);
         playerSize = Math.max(MIN_SIZE, playerSize);
@@ -185,11 +181,11 @@ public class LehaGame_large extends JPanel implements KeyListener, Runnable {
 
         for (Food food : foods) {
             switch (food.type) {
-                case HEALTHY: g.setColor(Color.GREEN); break;
-                case JUNK: g.setColor(Color.ORANGE); break;
-                case POISON: g.setColor(Color.RED); break;
-                case ENERGY: g.setColor(Color.YELLOW); break;
-                case ANTIDOTE: g.setColor(Color.WHITE); break;
+                case HEALTHY -> g.setColor(Color.GREEN);
+                case JUNK -> g.setColor(Color.ORANGE);
+                case POISON -> g.setColor(Color.RED);
+                case ENERGY -> g.setColor(Color.YELLOW);
+                case ANTIDOTE -> g.setColor(Color.WHITE);
             }
             g.fillRect(food.x, food.y, 20, 20);
         }
@@ -233,22 +229,22 @@ public class LehaGame_large extends JPanel implements KeyListener, Runnable {
 
         if (totalCalories >= calorieCost) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_LEFT -> {
                     playerPos.x = Math.max(0, playerPos.x - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_RIGHT:
+                }
+                case KeyEvent.VK_RIGHT -> {
                     playerPos.x = Math.min(760 - playerSize, playerPos.x + step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_UP:
+                }
+                case KeyEvent.VK_UP -> {
                     playerPos.y = Math.max(0, playerPos.y - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_DOWN:
+                }
+                case KeyEvent.VK_DOWN -> {
                     playerPos.y = Math.min(560 - playerSize, playerPos.y + step);
                     totalCalories -= calorieCost;
-                    break;
+                }
             }
         }
     }

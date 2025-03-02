@@ -5,16 +5,26 @@ import ru.kaevuezhor.leha.food.FoodManager;
 import ru.kaevuezhor.leha.food.FoodType;
 import ru.kaevuezhor.leha.player.Player;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
-import javax.swing.*;
-import java.awt.*;
+import static ru.kaevuezhor.leha.game.GameConfig.FOOD_SIZE;
 
 /**
  * Отрисовывает игровое состояние на экране
  */
 public class GameRenderer extends JPanel {
+
+    private Image playerImage;        // Изображение игрока
+    private Image healthyImage;       // Здоровая еда
+    private Image junkImage;          // Фастфуд
+    private Image poisonImage;        // Яд
+    private Image energyImage;        // Энергетик
+
+    private Image backgroundImage; // Новое поле для фона
+
     private Player player;       // Ссылка на игрока
     private FoodManager foodManager; // Менеджер еды
 
@@ -28,6 +38,17 @@ public class GameRenderer extends JPanel {
                 GameConfig.GAME_WIDTH,
                 GameConfig.GAME_HEIGHT
         ));
+
+        try {
+            backgroundImage = ImageIO.read(getClass().getResource("/background.png"));
+            playerImage = ImageIO.read(getClass().getResource("/leha.png"));
+            healthyImage = ImageIO.read(getClass().getResource("/healthy.png"));
+            junkImage = ImageIO.read(getClass().getResource("/junk.png"));
+            poisonImage = ImageIO.read(getClass().getResource("/poison.png"));
+            energyImage = ImageIO.read(getClass().getResource("/energy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -44,19 +65,35 @@ public class GameRenderer extends JPanel {
 
     // Отрисовка фона
     private void renderBackground(Graphics g) {
-        g.setColor(new Color(30, 30, 70));
-        g.fillRect(0, 0, getWidth(), getHeight());
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        if (backgroundImage != null) {
+            int x = (GameConfig.GAME_WIDTH - backgroundImage.getWidth(null)) / 2;
+            int y = (GameConfig.GAME_HEIGHT - backgroundImage.getHeight(null)) / 2;
+            g2d.drawImage(backgroundImage, x, y, null);
+        } else {
+            // Запасной цвет
+        }
+
+        g2d.dispose();
     }
 
     // Отрисовка элементов еды
     private void renderFood(Graphics g) {
-        for(Food food : foodManager.getFoods()) {
-            g.setColor(getFoodColor(food.type));
-            g.fillRect(food.x, food.y,
-                    GameConfig.FOOD_SIZE,
-                    GameConfig.FOOD_SIZE
-            );
+        Graphics2D g2d = (Graphics2D) g.create();
+        for (Food food : foodManager.getFoods()) {
+            Image foodImage = switch (food.type) {
+                case HEALTHY -> healthyImage;
+                case JUNK -> junkImage;
+                case POISON -> poisonImage;
+                case ENERGY -> energyImage;
+            };
+
+            // Масштабируем изображение до нужного размера
+            Image scaledImage = foodImage.getScaledInstance(FOOD_SIZE, FOOD_SIZE, Image.SCALE_SMOOTH);
+            g2d.drawImage(scaledImage, food.x, food.y, null);
         }
+        g2d.dispose();
     }
 
     // Возвращает цвет для разных типов еды
@@ -71,10 +108,14 @@ public class GameRenderer extends JPanel {
 
     // Отрисовка игрока
     private void renderPlayer(Graphics g) {
-        g.setColor(Color.ORANGE);
+        Graphics2D g2d = (Graphics2D) g.create();
         Point pos = player.getPosition();
         int size = player.getSize();
-        g.fillOval(pos.x, pos.y, size, size);
+
+        // Масштабируем изображение
+        Image scaled = playerImage.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        g2d.drawImage(scaled, pos.x, pos.y, null);
+        g2d.dispose();
     }
 
     // Отрисовка интерфейса пользователя

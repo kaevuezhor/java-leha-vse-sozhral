@@ -1,14 +1,11 @@
 package ru.kaevuezhor.leha.food;
 
 import ru.kaevuezhor.leha.game.GameConfig;
-import ru.kaevuezhor.leha.game.SoundManager;
+import ru.kaevuezhor.leha.sound.SoundManager;
 import ru.kaevuezhor.leha.player.Player;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Random;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -52,7 +49,6 @@ public class FoodManager {
      */
     public void checkCollisions(Player player, SoundManager sound) {
         Rectangle playerRect = createPlayerRectangle(player);
-
         for(int i = foods.size()-1; i >= 0; i--) {
             Food food = foods.get(i);
             if(checkCollision(playerRect, food)) {
@@ -60,7 +56,6 @@ public class FoodManager {
                 foods.remove(i);
             }
         }
-
         maintainMinimumFood();
     }
 
@@ -94,19 +89,11 @@ public class FoodManager {
 
     // Применяет эффект от съеденной еды
     private void applyFoodEffect(FoodType type, Player player, SoundManager sound) {
-        switch(type) {
-            case HEALTHY:
-                handleHealthyFood(player, sound);
-                break;
-            case JUNK:
-                handleJunkFood(player, sound);
-                break;
-            case POISON:
-                handlePoisonFood(player, sound);
-                break;
-            case ENERGY:
-                handleEnergyFood(player, sound);
-                break;
+        switch (type) {
+            case HEALTHY -> handleHealthyFood(player, sound);
+            case JUNK -> handleJunkFood(player, sound);
+            case POISON -> handlePoisonFood(player, sound);
+            case ENERGY -> handleEnergyFood(player, sound);
         }
         player.setSize(Math.min(GameConfig.PLAYER_MAX_SIZE, player.getSize()));
     }
@@ -116,12 +103,14 @@ public class FoodManager {
         player.modifyCalories(GameConfig.HEALTHY_FOOD_CALORIES);
         player.setSize(player.getSize() + GameConfig.HEALTHY_FOOD_SIZE);
         sound.playEatSound();
+        sound.playHealthySound();
     }
 
     private void handleJunkFood(Player player, SoundManager sound) {
         player.modifyCalories(GameConfig.JUNK_FOOD_CALORIES);
         player.setSize(player.getSize() + GameConfig.JUNK_FOOD_SIZE);
         sound.playEatSound();
+        sound.playJunkSound();
     }
 
     private void handlePoisonFood(Player player, SoundManager sound) {
@@ -130,12 +119,16 @@ public class FoodManager {
                 GameConfig.PLAYER_MIN_SIZE,
                 player.getSize() - GameConfig.POISON_SIZE_PENALTY
         ));
+        if (player.getLives() > 0) {
+            sound.playRegularPoisonSound();
+        }
         player.handlePoisoning(sound); // Добавляем вызов обработки
     }
 
     private void handleEnergyFood(Player player, SoundManager sound) {
         player.modifyCalories(GameConfig.ENERGY_FOOD_CALORIES);
         sound.playEatSound();
+        sound.playEnergySound();
     }
 
     /**

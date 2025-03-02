@@ -2,6 +2,7 @@ package ru.kaevuezhor.leha.game;
 
 import ru.kaevuezhor.leha.food.FoodManager;
 import ru.kaevuezhor.leha.player.Player;
+import ru.kaevuezhor.leha.sound.SoundManager;
 
 /**
  * Управляет основным игровым процессом и логикой
@@ -38,8 +39,7 @@ public class GameEngine implements Runnable {
 
     @Override
     public void run() {
-        gameRunning = true;
-        while(gameRunning && !Thread.currentThread().isInterrupted()) {
+        while (gameRunning && !Thread.currentThread().isInterrupted()) {
             updateGameState();
             sleepForNextFrame();
         }

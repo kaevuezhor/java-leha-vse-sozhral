@@ -1,5 +1,7 @@
 package ru.kaevuezhor.leha.game;
 
+import ru.kaevuezhor.leha.LehaGame;
+
 import javax.swing.*;
 import java.awt.event.KeyListener;
 
@@ -8,13 +10,21 @@ public class GameUIManager {
     private final GameRenderer renderer;
     private Timer gameTimer;
 
-    public GameUIManager(GameRenderer renderer) {
+    public GameUIManager(JFrame mainFrame, GameRenderer renderer) {
+        this.frame = mainFrame; // Принимаем существующий фрейм
         this.renderer = renderer;
-        this.frame = new JFrame("Леха всё сожрал!");
-        initializeFrame();
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        frame.add(renderer);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
     }
 
     private void initializeFrame() {
+        frame.setTitle("Леха всё сожрал!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
         frame.pack();
@@ -46,8 +56,8 @@ public class GameUIManager {
 
     // Добавляем метод для настройки ввода
     public void setupInput(InputHandler inputHandler) {
-        if (inputHandler != null && frame != null) {
-            frame.addKeyListener(inputHandler);
+        if (inputHandler != null) {
+            frame.addKeyListener(inputHandler); // Добавляем обработчик напрямую к основному фрейму
         }
     }
 

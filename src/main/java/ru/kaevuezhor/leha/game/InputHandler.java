@@ -2,10 +2,6 @@ package ru.kaevuezhor.leha.game;
 
 import ru.kaevuezhor.leha.player.Player;
 
-import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

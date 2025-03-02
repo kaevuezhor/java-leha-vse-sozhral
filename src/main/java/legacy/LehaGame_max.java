@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class LehaGame_max extends JPanel implements KeyListener, Runnable {
@@ -81,19 +82,19 @@ public class LehaGame_max extends JPanel implements KeyListener, Runnable {
         try {
             // Звук еды
             URL eatSoundUrl = getClass().getResource("/eat.wav");
-            AudioInputStream eatAudio = AudioSystem.getAudioInputStream(eatSoundUrl);
+            AudioInputStream eatAudio = AudioSystem.getAudioInputStream(Objects.requireNonNull(eatSoundUrl));
             eatSound = AudioSystem.getClip();
             eatSound.open(eatAudio);
 
             // Звук отравления
             URL diareaSoundUrl = getClass().getResource("/diarea.wav");
-            AudioInputStream diareaAudio = AudioSystem.getAudioInputStream(diareaSoundUrl);
+            AudioInputStream diareaAudio = AudioSystem.getAudioInputStream(Objects.requireNonNull(diareaSoundUrl));
             diareaSound = AudioSystem.getClip();
             diareaSound.open(diareaAudio);
 
             // Звук взрыва
             URL explosionSoundUrl = getClass().getResource("/blup.wav");
-            AudioInputStream explosionAudio = AudioSystem.getAudioInputStream(explosionSoundUrl);
+            AudioInputStream explosionAudio = AudioSystem.getAudioInputStream(Objects.requireNonNull(explosionSoundUrl));
             explosionSound = AudioSystem.getClip();
             explosionSound.open(explosionAudio);
 
@@ -109,7 +110,7 @@ public class LehaGame_max extends JPanel implements KeyListener, Runnable {
             try {
                 InputStream is = getClass().getResourceAsStream("/theme.mp3");
                 while (musicRunning) {
-                    bgmPlayer = new Player(is);
+                    bgmPlayer = new Player(Objects.requireNonNull(is));
                     bgmPlayer.play();
                     is = getClass().getResourceAsStream("/theme.mp3");
                 }
@@ -158,22 +159,20 @@ public class LehaGame_max extends JPanel implements KeyListener, Runnable {
     // Эффекты от еды
     private void applyFoodEffect(FoodType type) {
         switch (type) {
-            case HEALTHY:
+            case HEALTHY -> {
                 totalCalories += 150;
                 playerSize += 2;
-                break;
-            case JUNK:
+            }
+            case JUNK -> {
                 totalCalories += 180;
                 playerSize += 25;
-                break;
-            case POISON:
+            }
+            case POISON -> {
                 lives--;
                 playerSize = Math.max(MIN_SIZE, playerSize - 30);
                 if (lives <= 0) handlePoisoning();
-                break;
-            case ENERGY:
-                totalCalories += 300;
-                break;
+            }
+            case ENERGY -> totalCalories += 300;
         }
         playerSize = Math.min(MAX_SIZE, playerSize);
         if (playerSize >= MAX_SIZE) gameRunning = false;
@@ -220,10 +219,10 @@ public class LehaGame_max extends JPanel implements KeyListener, Runnable {
 
         for (Food food : foods) {
             switch (food.type) {
-                case HEALTHY: g.setColor(Color.GREEN); break;
-                case JUNK: g.setColor(Color.ORANGE); break;
-                case POISON: g.setColor(Color.RED); break;
-                case ENERGY: g.setColor(Color.YELLOW); break;
+                case HEALTHY -> g.setColor(Color.GREEN);
+                case JUNK -> g.setColor(Color.ORANGE);
+                case POISON -> g.setColor(Color.RED);
+                case ENERGY -> g.setColor(Color.YELLOW);
             }
             g.fillRect(food.x, food.y, 20, 20);
         }
@@ -305,22 +304,22 @@ public class LehaGame_max extends JPanel implements KeyListener, Runnable {
 
         if (totalCalories >= calorieCost) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_LEFT -> {
                     playerPos.x = Math.max(0, playerPos.x - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_RIGHT:
+                }
+                case KeyEvent.VK_RIGHT -> {
                     playerPos.x = Math.min(760 - playerSize, playerPos.x + step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_UP:
+                }
+                case KeyEvent.VK_UP -> {
                     playerPos.y = Math.max(0, playerPos.y - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_DOWN:
+                }
+                case KeyEvent.VK_DOWN -> {
                     playerPos.y = Math.min(560 - playerSize, playerPos.y + step);
                     totalCalories -= calorieCost;
-                    break;
+                }
             }
         }
     }
