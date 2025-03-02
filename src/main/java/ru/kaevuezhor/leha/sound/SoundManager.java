@@ -24,6 +24,10 @@ public class SoundManager {
 
     private Clip winSound;
 
+    private Clip lostSound;
+
+    private Clip junkSound;
+
 
     /**
      * Загружает все звуковые ресурсы
@@ -37,6 +41,8 @@ public class SoundManager {
         loadClip("/energy.wav", "energy"); // Новая строка
         loadClip("/poison_regular.wav", "regular_poison");
         loadClip("/win.wav", "win"); // Новая строка
+        loadClip("/perezhral.wav", "lost"); // Новая строка
+        loadClip("/junk.wav", "junk"); // Новая строка
     }
 
     // Загружает звуковой файл в Clip
@@ -78,6 +84,14 @@ public class SoundManager {
                     winSound = AudioSystem.getClip();
                     winSound.open(audio);
                 }
+                case "lost" -> {
+                    lostSound = AudioSystem.getClip();
+                    lostSound.open(audio);
+                }
+                case "junk" -> {
+                    junkSound = AudioSystem.getClip();
+                    junkSound.open(audio);
+                }
             }
         } catch (Exception e) {
             System.err.println("Ошибка загрузки звука: " + e.getMessage());
@@ -117,6 +131,14 @@ public class SoundManager {
 
     public void playWinSound() {
         playClip(winSound);
+    }
+
+    public void playLostSound() {
+        playClip(lostSound);
+    }
+
+    public void playJunkSound() {
+        playClip(junkSound);
     }
 
     // Общий метод воспроизведения звука

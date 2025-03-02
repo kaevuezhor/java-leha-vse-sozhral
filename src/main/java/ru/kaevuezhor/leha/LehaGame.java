@@ -185,6 +185,7 @@ public class LehaGame extends JFrame {
         logger.info("Формирование сообщения завершения");
         if (player.getSize() >= GameConfig.PLAYER_MAX_SIZE) {
             soundManager.playExplosionSound();
+            soundManager.playLostSound();
             logger.info("Поражение: превышение максимального размера");
             return "Леха лопнул от обжорства!";
         } else if (player.getCalories() >= GameConfig.WIN_CALORIES) {
@@ -202,7 +203,7 @@ public class LehaGame extends JFrame {
         logger.info("Форматирование хокку: " + haiku.getText());
         return "<html>" +
                 "<div style='text-align: center; font-size: 14px;'>" +
-                "Леха все сожрал!<br>" +
+                "ЛЕХА ВСЁ СОЖРАЛ!<br>" +
                 haiku.getText().replace("\n", "<br>") +
                 "</div></html>";
     }

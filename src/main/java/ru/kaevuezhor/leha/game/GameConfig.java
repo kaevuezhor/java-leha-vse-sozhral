@@ -22,12 +22,12 @@ public class GameConfig {
     public static final int HEALTHY_FOOD_CALORIES = 150; // Калории здоровой еды
     public static final int HEALTHY_FOOD_SIZE = 2;       // Увеличение размера
 
-    public static final int JUNK_FOOD_CALORIES = 180;    // Калории фастфуда
-    public static final int JUNK_FOOD_SIZE = 25;         // Увеличение размера
+    public static final int JUNK_FOOD_CALORIES = 250;    // Калории фастфуда
+    public static final int JUNK_FOOD_SIZE = 20;         // Увеличение размера
 
-    public static final int ENERGY_FOOD_CALORIES = 300;  // Калории энергетика
+    public static final int ENERGY_FOOD_CALORIES = 200;  // Калории энергетика
 
-    public static final int POISON_SIZE_PENALTY = 30;     // Уменьшение размера от яда
+    public static final int POISON_SIZE_PENALTY = 25;     // Уменьшение размера от яда
     public static final int POISON_CALORIES_PENALTY = 1000; // Потеря калорий при отравлении
     public static final int POISON_LIVES_PENALTY = 1; // -1 жизнь за яд
 
