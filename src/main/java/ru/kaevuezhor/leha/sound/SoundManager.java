@@ -94,6 +94,7 @@ public class SoundManager {
     public void stopBackgroundMusic() {
         musicRunning = false;
         if(bgmPlayer != null) bgmPlayer.close();
+        themeSound.stop();
     }
 
     // Методы воспроизведения звуковых эффектов
