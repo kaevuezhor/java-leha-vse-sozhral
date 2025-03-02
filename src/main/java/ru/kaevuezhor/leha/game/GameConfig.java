@@ -38,7 +38,7 @@ public class GameConfig {
     // Размеры игрового поля
     public static final int GAME_WIDTH = 800;            // Ширина экрана
     public static final int GAME_HEIGHT = 600;           // Высота экрана
-    public static final int FOOD_SIZE = 20;              // Размер элемента еды
+    public static final int FOOD_SIZE = 40;              // Размер элемента еды
 
     // Настройки генерации еды
     public static final int INITIAL_FOOD_COUNT = 10;     // Еда при старте
@@ -60,4 +60,6 @@ public class GameConfig {
     public static float getFoodSpawnChancePoison() {
         return POISON_SPAWN_CHANCE;
     }
+
+
 }
