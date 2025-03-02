@@ -18,6 +18,8 @@ public class SoundManager {
     private Clip explosionSound;  // Звук взрыва
 
     private Clip themeSound;       // Фоновая музыка
+    private Clip healthySound; // Новая переменная для звука healthy
+
     private Player bgmPlayer;      // Проигрыватель фоновой музыки
     private boolean musicRunning; // Флаг воспроизведения музыки
 
@@ -29,6 +31,8 @@ public class SoundManager {
         loadClip("/diarea.wav", "poison");
         loadClip("/blup.wav", "explosion");
         loadClip("/theme.wav", "theme");
+        loadClip("/healthy.wav", "healthy"); // Новая строка
+
     }
 
     // Загружает звуковой файл в Clip
@@ -41,6 +45,10 @@ public class SoundManager {
                 case "eat" -> {
                     eatSound = AudioSystem.getClip();
                     eatSound.open(audio);
+                }
+                case "healthy" -> { // Новая ветка для healthy
+                    healthySound = AudioSystem.getClip();
+                    healthySound.open(audio);
                 }
                 case "poison" -> {
                     poisonSound = AudioSystem.getClip();
@@ -92,6 +100,10 @@ public class SoundManager {
     public void playEatSound() { playClip(eatSound); }
     public void playPoisonSound() { playClip(poisonSound); }
     public void playExplosionSound() { playClip(explosionSound); }
+
+    public void playHealthySound() {
+        playClip(healthySound);
+    }
 
     // Общий метод воспроизведения звука
     public void playClip(Clip clip) {

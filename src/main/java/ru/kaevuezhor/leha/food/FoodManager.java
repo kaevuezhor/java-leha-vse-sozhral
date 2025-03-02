@@ -103,6 +103,7 @@ public class FoodManager {
         player.modifyCalories(GameConfig.HEALTHY_FOOD_CALORIES);
         player.setSize(player.getSize() + GameConfig.HEALTHY_FOOD_SIZE);
         sound.playEatSound();
+        sound.playHealthySound();
     }
 
     private void handleJunkFood(Player player, SoundManager sound) {
