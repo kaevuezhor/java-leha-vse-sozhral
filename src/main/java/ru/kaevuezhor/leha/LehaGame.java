@@ -209,7 +209,6 @@ public class LehaGame extends JFrame {
         foodManager.reset();
         renderer.repaint();
         engine = new GameEngine(player, foodManager, soundManager);
-        foodManager.spawnFood(GameConfig.INITIAL_FOOD_COUNT);
         startGame();
         requestFocusInWindow();
         logger.info("Новая игра запущена");
