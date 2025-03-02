@@ -68,6 +68,9 @@ public class LehaGame extends JFrame {
 
         foodManager = new FoodManager();
         soundManager = new SoundManager();
+        if (renderer != null) {
+            remove(renderer);
+        }
         renderer = new GameRenderer(player, foodManager);
         engine = new GameEngine(player, foodManager, soundManager);
 
@@ -80,6 +83,8 @@ public class LehaGame extends JFrame {
         add(renderer);
         addKeyListener(new InputHandler(player));
         logger.info("Обработчик ввода зарегистрирован");
+        revalidate();
+        repaint();
     }
 
     private void setupManagers() {
@@ -207,9 +212,18 @@ public class LehaGame extends JFrame {
         victoryHaiku = null;
         player.reset();
         foodManager.reset();
-        renderer.repaint();
-        engine = new GameEngine(player, foodManager, soundManager);
+
+
+
+        initializeComponents();
+        setupUI();
         startGame();
+
+        //renderer.repaint();
+        //engine = new GameEngine(player, foodManager, soundManager);
+        setExtendedState(JFrame.NORMAL);
+        setVisible(true);
+        toFront();
         requestFocusInWindow();
         logger.info("Новая игра запущена");
     }
