@@ -27,6 +27,9 @@ public class LehaGame extends JFrame {
     private SoundManager soundManager;
     private LehaHaiku victoryHaiku;
     private Timer gameTimer;
+    private long startTime; // Время начала игры
+    private long currentTimeMillis; // Текущее время игры в миллисекундах
+    private String difficultyLevel = "Обычная"; // Значение по умолчанию
 
     public LehaGame() {
         logger.info("=== Инициализация главного окна ===");
@@ -58,7 +61,11 @@ public class LehaGame extends JFrame {
         logger.info("Отображение диалога настроек");
         SettingsDialog dialog = new SettingsDialog(null);
         dialog.setVisible(true);
-        return dialog.isSettingsConfirmed();
+        if (dialog.isSettingsConfirmed()) {
+            this.difficultyLevel = dialog.getDifficultyLevel();
+            return true;
+        }
+        return false;
     }
 
     private void initializeComponents() {
@@ -115,6 +122,7 @@ public class LehaGame extends JFrame {
 
     private void startGame() {
         logger.info("=== Запуск игрового цикла ===");
+        startTime = System.currentTimeMillis(); // Фиксируем время старта
         if (engine != null) {
             engine.stopGame();
             logger.info("Предыдущий GameEngine остановлен");
@@ -137,6 +145,8 @@ public class LehaGame extends JFrame {
                 gameTimer.stop();
                 showGameOver();
             }
+            currentTimeMillis = System.currentTimeMillis() - startTime; // Обновляем время
+            renderer.setCurrentTime(currentTimeMillis); // Передаем в рендер
             renderer.repaint();
             logger.fine("Кадр перерисован");
         });
@@ -205,6 +215,7 @@ public class LehaGame extends JFrame {
                 "<div style='text-align: center; font-size: 14px;'>" +
                 "ЛЕХА ВСЁ СОЖРАЛ!<br>" +
                 haiku.getText().replace("\n", "<br>") +
+                "<br><br>Уровень сложности: " + difficultyLevel +
                 "</div></html>";
     }
 

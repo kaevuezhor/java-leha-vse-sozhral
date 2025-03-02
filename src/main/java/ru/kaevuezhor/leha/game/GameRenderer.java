@@ -28,6 +28,9 @@ public class GameRenderer extends JPanel {
     private Player player;       // Ссылка на игрока
     private FoodManager foodManager; // Менеджер еды
 
+    private long currentTime; // Текущее время для отображения
+
+
     /**
      * Конструктор инициализирует панель отрисовки
      */
@@ -51,6 +54,10 @@ public class GameRenderer extends JPanel {
         }
     }
 
+    public void setCurrentTime(long time) {
+        this.currentTime = time;
+    }
+
     /**
      * Основной метод отрисовки компонентов
      */
@@ -61,6 +68,7 @@ public class GameRenderer extends JPanel {
         renderFood(g);
         renderPlayer(g);
         renderUI(g);
+        drawTimer(g);
     }
 
     // Отрисовка фона
@@ -136,5 +144,20 @@ public class GameRenderer extends JPanel {
 
         // Размер
         g.drawString("Размер: " + player.getSize(), 10, 80);
+    }
+
+    private void drawTimer(Graphics g) {
+        int seconds = (int) (currentTime / 1000);
+        int millis = (int) (currentTime % 1000);
+        String timeText = String.format("%02d.%03d", seconds, millis);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+
+        FontMetrics metrics = g.getFontMetrics();
+        int x = getWidth() - metrics.stringWidth(timeText) - 20; // Отступ справа 20px
+        int y = metrics.getHeight() + 20; // Отступ сверху 20px
+
+        g.drawString(timeText, x, y);
     }
 }

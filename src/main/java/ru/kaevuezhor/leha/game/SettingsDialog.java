@@ -8,10 +8,11 @@ import java.awt.event.ActionEvent;
  * Диалоговое окно настроек игры
  */
 public class SettingsDialog extends JDialog {
+
     private JSlider volumeSlider;       // Регулятор громкости
     private JComboBox<String> difficultyCombo; // Выбор сложности
     private JCheckBox soundCheckbox;     // Включение звука
-    private boolean settingsConfirmed;  // Флаг подтверждения
+    private boolean settingsConfirmed = false;  // Флаг подтверждения
 
     public SettingsDialog(Frame parent) {
         super(parent, "Настройки игры", true);
@@ -22,7 +23,11 @@ public class SettingsDialog extends JDialog {
     private void initializeComponents() {
         // Создаем компоненты
         volumeSlider = new JSlider(0, 100, 80);
-        difficultyCombo = new JComboBox<>(new String[]{"Легко", "Средне", "Сложно"});
+        difficultyCombo = new JComboBox<>(new String[]{"Простая", "Обычная", "Сложная"});
+        difficultyCombo.setSelectedIndex(1); // Средний по умолчанию
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Уровень сложности:"));
+        panel.add(difficultyCombo);
         soundCheckbox = new JCheckBox("Включить звук", true);
 
         // Кнопки управления
@@ -91,5 +96,9 @@ public class SettingsDialog extends JDialog {
 
     public boolean isSettingsConfirmed() {
         return settingsConfirmed;
+    }
+
+    public String getDifficultyLevel() {
+        return (String) difficultyCombo.getSelectedItem();
     }
 }

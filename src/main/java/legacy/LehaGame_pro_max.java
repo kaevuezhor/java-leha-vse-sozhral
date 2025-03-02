@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class LehaGame_large extends JPanel implements KeyListener, Runnable {
+public class LehaGame_pro_max extends JPanel implements KeyListener, Runnable {
     private int totalCalories;
     private int lives;
     private int playerSize;
@@ -46,7 +46,7 @@ public class LehaGame_large extends JPanel implements KeyListener, Runnable {
 
     enum FoodType { HEALTHY, JUNK, POISON, ENERGY, ANTIDOTE }
 
-    public LehaGame_large(JFrame frame) {
+    public LehaGame_pro_max(JFrame frame) {
         this.parentFrame = frame;
         loadSounds();
         initializeGame();
@@ -255,7 +255,7 @@ public class LehaGame_large extends JPanel implements KeyListener, Runnable {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Леха всё сожрал!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        LehaGame_large game = new LehaGame_large(frame);
+        LehaGame_pro_max game = new LehaGame_pro_max(frame);
         frame.add(game);
         frame.pack();
         frame.setVisible(true);
