@@ -188,6 +188,7 @@ public class LehaGame extends JFrame {
             logger.info("Поражение: превышение максимального размера");
             return "Леха лопнул от обжорства!";
         } else if (player.getCalories() >= GameConfig.WIN_CALORIES) {
+            soundManager.playWinSound();
             victoryHaiku = LehaHaiku.getRandom();
             logger.info("Победа: достигнут лимит калорий");
             return formatHaikuMessage(victoryHaiku);

@@ -22,6 +22,8 @@ public class SoundManager {
 
     private Clip regularPoisonSound;
 
+    private Clip winSound;
+
 
     /**
      * Загружает все звуковые ресурсы
@@ -34,6 +36,7 @@ public class SoundManager {
         loadClip("/healthy.wav", "healthy"); // Новая строка
         loadClip("/energy.wav", "energy"); // Новая строка
         loadClip("/poison_regular.wav", "regular_poison");
+        loadClip("/win.wav", "win"); // Новая строка
     }
 
     // Загружает звуковой файл в Clip
@@ -71,6 +74,10 @@ public class SoundManager {
                     regularPoisonSound = AudioSystem.getClip();
                     regularPoisonSound.open(audio);
                 }
+                case "win" -> {
+                    winSound = AudioSystem.getClip();
+                    winSound.open(audio);
+                }
             }
         } catch (Exception e) {
             System.err.println("Ошибка загрузки звука: " + e.getMessage());
@@ -106,6 +113,10 @@ public class SoundManager {
 
     public void playRegularPoisonSound() {
         playClip(regularPoisonSound);
+    }
+
+    public void playWinSound() {
+        playClip(winSound);
     }
 
     // Общий метод воспроизведения звука

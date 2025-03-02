@@ -22,6 +22,9 @@ public class GameRenderer extends JPanel {
     private Image junkImage;          // Фастфуд
     private Image poisonImage;        // Яд
     private Image energyImage;        // Энергетик
+
+    private Image backgroundImage; // Новое поле для фона
+
     private Player player;       // Ссылка на игрока
     private FoodManager foodManager; // Менеджер еды
 
@@ -35,7 +38,9 @@ public class GameRenderer extends JPanel {
                 GameConfig.GAME_WIDTH,
                 GameConfig.GAME_HEIGHT
         ));
+
         try {
+            backgroundImage = ImageIO.read(getClass().getResource("/background.png"));
             playerImage = ImageIO.read(getClass().getResource("/leha.png"));
             healthyImage = ImageIO.read(getClass().getResource("/healthy.png"));
             junkImage = ImageIO.read(getClass().getResource("/junk.png"));
@@ -60,8 +65,17 @@ public class GameRenderer extends JPanel {
 
     // Отрисовка фона
     private void renderBackground(Graphics g) {
-        g.setColor(new Color(30, 30, 70));
-        g.fillRect(0, 0, getWidth(), getHeight());
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        if (backgroundImage != null) {
+            int x = (GameConfig.GAME_WIDTH - backgroundImage.getWidth(null)) / 2;
+            int y = (GameConfig.GAME_HEIGHT - backgroundImage.getHeight(null)) / 2;
+            g2d.drawImage(backgroundImage, x, y, null);
+        } else {
+            // Запасной цвет
+        }
+
+        g2d.dispose();
     }
 
     // Отрисовка элементов еды
