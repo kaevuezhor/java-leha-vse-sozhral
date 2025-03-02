@@ -20,9 +20,6 @@ public class SoundManager {
     private Clip themeSound;       // Фоновая музыка
     private Clip healthySound; // Новая переменная для звука healthy
 
-    private Player bgmPlayer;      // Проигрыватель фоновой музыки
-    private boolean musicRunning; // Флаг воспроизведения музыки
-
     /**
      * Загружает все звуковые ресурсы
      */
@@ -75,25 +72,10 @@ public class SoundManager {
         playClip(themeSound);
     }
 
-    // Цикл воспроизведения музыки
-    private void musicLoop() {
-        try {
-            while(musicRunning) {
-                InputStream is = getClass().getResourceAsStream("/theme.wav");
-                bgmPlayer = new Player(Objects.requireNonNull(is));
-                bgmPlayer.play();
-            }
-        } catch (Exception e) {
-            System.err.println("Ошибка музыки: " + e.getMessage());
-        }
-    }
-
     /**
      * Останавливает фоновую музыку
      */
     public void stopBackgroundMusic() {
-        musicRunning = false;
-        if(bgmPlayer != null) bgmPlayer.close();
         themeSound.stop();
     }
 
