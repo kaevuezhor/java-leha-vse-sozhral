@@ -8,100 +8,84 @@ import ru.kaevuezhor.leha.game.GameRenderer;
 import ru.kaevuezhor.leha.game.GameUIManager;
 import ru.kaevuezhor.leha.game.InputHandler;
 import ru.kaevuezhor.leha.game.SettingsDialog;
-import ru.kaevuezhor.leha.game.SoundManager;
+import ru.kaevuezhor.leha.sound.SoundManager;
 import ru.kaevuezhor.leha.player.Player;
 import ru.kaevuezhor.leha.reply.LehaHaiku;
-
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Logger;
 
-/**
- * Главное окно игры "Леха всё сожрал!".
- * Управляет созданием интерфейса, обработкой событий и игровой логикой.
- */
 public class LehaGame extends JFrame {
-    // Основные компоненты игры
+    private static final Logger logger = Logger.getLogger(LehaGame.class.getName());
     private GameLifecycleManager lifecycleManager;
     private GameUIManager uiManager;
-    private GameEngine engine;          // Обрабатывает игровую логику и правила
-    private GameRenderer renderer;      // Отвечает за отрисовку графики
-    private Player player;              // Объект игрока (Лехи)
-    private FoodManager foodManager;    // Управляет генерацией и состоянием еды
-    private SoundManager soundManager;  // Контролирует воспроизведение звуков
-    private LehaHaiku victoryHaiku;     // Хранит хокку для победного сообщения
-    private Timer gameTimer;            // Таймер для обновления игрового цикла
+    private GameEngine engine;
+    private GameRenderer renderer;
+    private Player player;
+    private FoodManager foodManager;
+    private SoundManager soundManager;
+    private LehaHaiku victoryHaiku;
+    private Timer gameTimer;
 
-    /**
-     * Конструктор игры.
-     * Запускает процесс инициализации и отображает игровое окно.
-     */
     public LehaGame() {
-        initWindowListeners();          // Настройка реакции на закрытие окна
-        if(showSettingsDialog()) {      // Показ настроек перед стартом
-            initializeComponents();    // Создание игровых объектов
-            //setupUI();                  // Настройка внешнего вида окна
+        logger.info("=== Инициализация главного окна ===");
+        initWindowListeners();
+        logger.info("Диалог настроек открыт");
+        if (showSettingsDialog()) {
+            logger.info("Настройки подтверждены. Начинаю инициализацию");
+            initializeComponents();
+            setupUI();
             setupManagers();
-            startGame();                // Запуск игрового процесса
+            startGame();
+        } else {
+            logger.warning("Игра не запущена: отмена настроек");
         }
     }
 
-    /**
-     * Настраивает обработчик закрытия окна.
-     * Гарантирует корректное завершение процессов при закрытии игры.
-     */
     private void initWindowListeners() {
+        logger.info("Настройка обработчика закрытия окна");
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                shutdownGame();  // Остановка всех систем перед выходом
+                shutdownGame();
+                logger.info("Окно закрыто");
             }
         });
     }
 
-    /**
-     * Показывает диалог настроек игры.
-     * @return true, если игрок подтвердил настройки, false - если отменил
-     */
     private boolean showSettingsDialog() {
-        SettingsDialog dialog = new SettingsDialog(null);  // Создание диалога
-        dialog.setVisible(true);                           // Показ диалога
-        return dialog.isSettingsConfirmed();              // Проверка подтверждения
+        logger.info("Отображение диалога настроек");
+        SettingsDialog dialog = new SettingsDialog(null);
+        dialog.setVisible(true);
+        return dialog.isSettingsConfirmed();
     }
 
-    /**
-     * Инициализирует игровые компоненты:
-     * - Создает игрока
-     * - Настраивает менеджеры еды и звуков
-     * - Подготавливает системы отрисовки и ввода
-     */
     private void initializeComponents() {
-        // Создание игрока в центре экрана
-        player = new Player(
-                GameConfig.GAME_WIDTH / 2,
-                GameConfig.GAME_HEIGHT / 2
-        );
+        logger.info("=== Инициализация компонентов ===");
+        player = new Player(GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2);
+        logger.info("Игрок создан (x: " + player.getPosition().x + ", y: " + player.getPosition().y + ")");
 
-        // Инициализация систем управления
-        foodManager = new FoodManager();          // Генератор еды
-        soundManager = new SoundManager();        // Звуковая система
+        foodManager = new FoodManager();
+        soundManager = new SoundManager();
+        renderer = new GameRenderer(player, foodManager);
+        engine = new GameEngine(player, foodManager, soundManager);
 
-        // Игровые подсистемы
-        renderer = new GameRenderer(player, foodManager);  // Отрисовка
-        engine = new GameEngine(player, foodManager, soundManager);  // Логика
+        foodManager.spawnFood(GameConfig.INITIAL_FOOD_COUNT);
+        logger.info("Спавн начальной еды: " + GameConfig.INITIAL_FOOD_COUNT);
 
-        // Подготовка к старту
-        foodManager.spawnFood(GameConfig.INITIAL_FOOD_COUNT);  // Первая партия еды
-        soundManager.loadSounds();                 // Загрузка звуковых файлов
+        soundManager.loadSounds();
+        logger.info("Звуки загружены");
 
-        // Добавление компонентов на экран
-        add(renderer);                             // Панель отрисовки в окно
-        addKeyListener(new InputHandler(player));  // Обработка клавиатуры
+        add(renderer);
+        addKeyListener(new InputHandler(player));
+        logger.info("Обработчик ввода зарегистрирован");
     }
 
     private void setupManagers() {
+        logger.info("Настройка игровых менеджеров");
         lifecycleManager = new GameLifecycleManager(player, foodManager, soundManager);
-        uiManager = new GameUIManager(new GameRenderer(player, foodManager));
+        uiManager = new GameUIManager(this, renderer);
         uiManager.showGame();
         setupInputHandling();
     }
@@ -109,68 +93,64 @@ public class LehaGame extends JFrame {
     private void setupInputHandling() {
         InputHandler inputHandler = new InputHandler(player);
         uiManager.setupInput(inputHandler);
+        logger.info("Ввод настроен через GameUIManager");
     }
 
-    /**
-     * Настраивает параметры игрового окна:
-     * - Заголовок и размеры
-     * - Расположение и видимость
-     * - Запрет изменения размера
-     */
     private void setupUI() {
-        setTitle("Леха всё сожрал!");     // Название в заголовке
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Выход при закрытии
-        pack();                          // Автоподбор размера под содержимое
-        setLocationRelativeTo(null);      // Центрирование на экране
-        setVisible(true);                 // Делаем окно видимым
-        setResizable(false);              // Фиксированный размер окна
+        logger.info("Настройка пользовательского интерфейса");
+        setTitle("Леха всё сожрал!");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+        setFocusable(true);
+        logger.info("Окно отображено (размер: " + getWidth() + "x" + getHeight() + ")");
     }
 
-    /**
-     * Запускает основной игровой цикл:
-     * - Останавливает предыдущие сессии
-     * - Запускает фоновую музыку
-     * - Активирует игровой движок и таймер обновлений
-     */
     private void startGame() {
-        // Очистка предыдущего состояния
-        if(engine != null) engine.stopGame();
-        if(gameTimer != null) gameTimer.stop();
+        logger.info("=== Запуск игрового цикла ===");
+        if (engine != null) {
+            engine.stopGame();
+            logger.info("Предыдущий GameEngine остановлен");
+        }
+        if (gameTimer != null) {
+            gameTimer.stop();
+            logger.info("Предыдущий таймер остановлен");
+        }
 
-        soundManager.playBackgroundMusic();  // Фоновая музыка
-        //lifecycleManager.startGame();
-        
-        // Запуск движка в отдельном потоке
+        soundManager.playBackgroundMusic();
+        logger.info("Фоновая музыка запущена");
+
         engine = new GameEngine(player, foodManager, soundManager);
         new Thread(engine::startGame).start();
+        logger.info("GameEngine запущен в новом потоке");
 
-        // Настройка таймера для обновления экрана
         gameTimer = new Timer(GameConfig.GAME_LOOP_DELAY, e -> {
-            if(!engine.isGameRunning()) {    // Проверка состояния игры
+            if (!engine.isGameRunning()) {
+                logger.severe("Игровой движок остановлен! Причина неизвестна");
                 gameTimer.stop();
-                showGameOver();              // Обработка завершения
+                showGameOver();
             }
-            renderer.repaint();              // Перерисовка кадра
+            renderer.repaint();
+            logger.fine("Кадр перерисован");
         });
-        gameTimer.start();  // Старт игрового цикла
+        gameTimer.start();
+        logger.info("Таймер запущен (интервал: " + GameConfig.GAME_LOOP_DELAY + " мс)");
+        player.reset();
+        logger.info("Игрок перезапущен (размер: " + player.getSize() + ", калории: " + player.getCalories() + ")");
     }
 
-    /**
-     * Обрабатывает завершение игры:
-     * - Останавливает музыку
-     * - Блокирует окно
-     * - Показывает итоговое сообщение
-     */
     private void showGameOver() {
-        soundManager.stopBackgroundMusic();  // Тишина!
+        logger.info("=== Игра завершена ===");
+        soundManager.stopBackgroundMusic();
+        setEnabled(false);
+        logger.info("Окно заблокировано");
 
-        setEnabled(false);  // Блокировка взаимодействия
-
-        // Задержка перед показом сообщения
         Timer delayTimer = new Timer(GameConfig.GAME_OVER_DELAY, e -> {
-            String message = buildGameOverMessage();  // Формирование текста
+            String message = buildGameOverMessage();
+            logger.info("Сообщение завершения: " + message);
 
-            // Диалог с выбором действия
             int choice = JOptionPane.showOptionDialog(
                     this,
                     message,
@@ -182,90 +162,71 @@ public class LehaGame extends JFrame {
                     0
             );
 
-            setEnabled(true);  // Разблокировка окна
-
-            // Обработка выбора игрока
+            setEnabled(true);
             if (choice == 0) {
-                restartGame();   // Рестарт
+                logger.info("Выбран перезапуск");
+                restartGame();
             } else {
-                dispose();       // Выход
+                logger.info("Выбран выход");
+                dispose();
             }
         });
         delayTimer.setRepeats(false);
         delayTimer.start();
+        logger.info("Таймер завершения запущен");
     }
 
-    /**
-     * Формирует сообщение о результате игры.
-     * @return Готовый текст для диалогового окна
-     */
     private String buildGameOverMessage() {
+        logger.info("Формирование сообщения завершения");
         if (player.getSize() >= GameConfig.PLAYER_MAX_SIZE) {
-            soundManager.playExplosionSound();  // Звук взрыва
+            soundManager.playExplosionSound();
+            logger.info("Поражение: превышение максимального размера");
             return "Леха лопнул от обжорства!";
         } else if (player.getCalories() >= GameConfig.WIN_CALORIES) {
-            // Генерация хокку при первом достижении победы
-            if (victoryHaiku == null) {
-                victoryHaiku = LehaHaiku.getRandom();
-            }
-            return formatHaikuMessage(victoryHaiku);  // Стилизованное сообщение
+            victoryHaiku = LehaHaiku.getRandom();
+            logger.info("Победа: достигнут лимит калорий");
+            return formatHaikuMessage(victoryHaiku);
+        } else {
+            logger.warning("Принудительное завершение без условий победы/поражения");
+            return "Лёха устал и уснул на пустой желудок...";
         }
-        return "Лёха устал и уснул на пустой желудок...";  // Поражение
     }
 
-    /**
-     * Форматирует текст хокку для красивого отображения.
-     * @param haiku Объект с текстом хокку
-     * @return HTML-код для диалогового окна
-     */
     private String formatHaikuMessage(LehaHaiku haiku) {
-        return "<html><div style='text-align: center; width: 300px;'>"
-                + "<h2 style='color: #FF6B6B;'>ЛЁХА ВСЁ СЖРАЛ!</h2>"
-                + "<div style='margin: 15px 0;'>"
-                + "<i>" + haiku.getText().replace("\n", "<br>") + "</i>"
-                + "</div></div></html>";
+        logger.info("Форматирование хокку: " + haiku.getText());
+        return "<html>" +
+                "<div style='text-align: center; font-size: 14px;'>" +
+                "Леха все сожрал!<br>" +
+                haiku.getText().replace("\n", "<br>") +
+                "</div></html>";
     }
 
-    /**
-     * Перезапускает игру с начальными параметрами.
-     * Обнуляет прогресс и создает новую игровую сессию.
-     */
     private void restartGame() {
-        shutdownGame();  // Очистка текущего состояния
-
-        // Создание новой игры
-        new LehaGame().setVisible(true);
-        if(engine != null) engine.stopGame();
-
-        // Сброс параметров
-        victoryHaiku = null;     // Очистка хокку
-        player.reset();          // Сброс состояния игрока
-        foodManager.reset();     // Перегенерация еды
-        engine = new GameEngine(player, foodManager, soundManager);  // Новый движок
-        startGame();             // Запуск цикла
+        logger.info("=== Перезапуск игры ===");
+        shutdownGame();
+        victoryHaiku = null;
+        player.reset();
+        foodManager.reset();
+        renderer.repaint();
+        engine = new GameEngine(player, foodManager, soundManager);
+        foodManager.spawnFood(GameConfig.INITIAL_FOOD_COUNT);
+        startGame();
+        requestFocusInWindow();
+        logger.info("Новая игра запущена");
     }
 
-    /**
-     * Точка входа в приложение.
-     * Запускает игру в специальном потоке для Swing.
-     */
-    public static void main(String[] args) {
-        // Корректный запуск Swing-приложения
-        SwingUtilities.invokeLater(() -> {
-            new LehaGame().setVisible(true);  // Создание и показ окна
-        });
-    }
-
-    /**
-     * Безопасно завершает работу всех систем игры.
-     * Останавливает таймеры, звуки и освобождает ресурсы.
-     */
     private void shutdownGame() {
-        if(engine != null) engine.stopGame();  // Остановка логики
-        if(gameTimer != null) gameTimer.stop(); // Остановка таймера
-        if (soundManager != null) {
-            soundManager.stopAllSounds();      // Выключение звуков
-        }
-        dispose();  // Закрытие окна
+        logger.info("=== Безопасное завершение ===");
+        if (engine != null) engine.stopGame();
+        if (gameTimer != null) gameTimer.stop();
+        soundManager.stopAllSounds();
+        logger.info("Ресурсы высвобождены");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            logger.info("Запуск приложения через SwingUtilities.invokeLater");
+            new LehaGame();
+        });
     }
 }

@@ -1,7 +1,7 @@
 package ru.kaevuezhor.leha.player;
 
 import ru.kaevuezhor.leha.game.GameConfig;
-import ru.kaevuezhor.leha.game.SoundManager;
+import ru.kaevuezhor.leha.sound.SoundManager;
 
 import java.awt.Point;
 
@@ -28,7 +28,7 @@ public class Player {
      * Обновляет множитель скорости на основе текущего размера
      */
     public void updateSpeed() {
-        float sizeRatio = (float)(size - GameConfig.PLAYER_MIN_SIZE) /
+        float sizeRatio = (float)(getSize() - GameConfig.PLAYER_MIN_SIZE) /
                 (GameConfig.PLAYER_MAX_SIZE - GameConfig.PLAYER_MIN_SIZE);
         speedMultiplier = 1.0f - sizeRatio * GameConfig.PLAYER_SPEED_REDUCTION;
     }

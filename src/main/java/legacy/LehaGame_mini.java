@@ -85,23 +85,17 @@ public class LehaGame_mini extends JPanel implements KeyListener, Runnable {
 
     private void applyFoodEffect(FoodType type) {
         switch (type) {
-            case HEALTHY:
+            case HEALTHY -> {
                 totalCalories += 150;
                 playerSize += 2;
-                break;
-            case JUNK:
-                totalCalories += 250;
-                break;
-            case POISON:
-                totalCalories += 400;
-                break;
-            case ENERGY:
+            }
+            case JUNK -> totalCalories += 250;
+            case POISON -> totalCalories += 400;
+            case ENERGY -> {
                 isTurbo = true;
                 new Timer(3000, e -> isTurbo = false).start();
-                break;
-            case ANTIDOTE:
-                lives = Math.min(3, lives + 1);
-                break;
+            }
+            case ANTIDOTE -> lives = Math.min(3, lives + 1);
         }
     }
 
@@ -119,11 +113,11 @@ public class LehaGame_mini extends JPanel implements KeyListener, Runnable {
         // Рисуем еду
         for (Food food : foods) {
             switch (food.type) {
-                case HEALTHY: g.setColor(Color.GREEN); break;
-                case JUNK: g.setColor(Color.ORANGE); break;
-                case POISON: g.setColor(Color.RED); break;
-                case ENERGY: g.setColor(Color.YELLOW); break;
-                case ANTIDOTE: g.setColor(Color.WHITE); break;
+                case HEALTHY -> g.setColor(Color.GREEN);
+                case JUNK -> g.setColor(Color.ORANGE);
+                case POISON -> g.setColor(Color.RED);
+                case ENERGY -> g.setColor(Color.YELLOW);
+                case ANTIDOTE -> g.setColor(Color.WHITE);
             }
             g.fillRect(food.x, food.y, 20, 20);
         }
@@ -160,22 +154,22 @@ public class LehaGame_mini extends JPanel implements KeyListener, Runnable {
 
         if (totalCalories >= calorieCost) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_LEFT -> {
                     playerPos.x = Math.max(0, playerPos.x - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_RIGHT:
+                }
+                case KeyEvent.VK_RIGHT -> {
                     playerPos.x = Math.min(760, playerPos.x + step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_UP:
+                }
+                case KeyEvent.VK_UP -> {
                     playerPos.y = Math.max(0, playerPos.y - step);
                     totalCalories -= calorieCost;
-                    break;
-                case KeyEvent.VK_DOWN:
+                }
+                case KeyEvent.VK_DOWN -> {
                     playerPos.y = Math.min(560, playerPos.y + step);
                     totalCalories -= calorieCost;
-                    break;
+                }
             }
         }
     }

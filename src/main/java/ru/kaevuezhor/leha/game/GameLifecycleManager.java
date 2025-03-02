@@ -2,6 +2,7 @@ package ru.kaevuezhor.leha.game;
 
 import ru.kaevuezhor.leha.food.FoodManager;
 import ru.kaevuezhor.leha.player.Player;
+import ru.kaevuezhor.leha.sound.SoundManager;
 
 public class GameLifecycleManager {
     private GameEngine engine;

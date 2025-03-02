@@ -2,8 +2,6 @@ package ru.kaevuezhor.leha.reply;
 
 import java.util.Random;
 
-import java.util.Random;
-
 /**
  * Коллекция тематических хокку для финальных сообщений
  */

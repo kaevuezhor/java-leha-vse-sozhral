@@ -8,9 +8,6 @@ import ru.kaevuezhor.leha.player.Player;
 import javax.swing.*;
 import java.awt.*;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * Отрисовывает игровое состояние на экране
  */
