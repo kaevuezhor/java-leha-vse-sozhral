@@ -118,12 +118,16 @@ public class FoodManager {
                 GameConfig.PLAYER_MIN_SIZE,
                 player.getSize() - GameConfig.POISON_SIZE_PENALTY
         ));
+        if (player.getLives() > 0) {
+            sound.playRegularPoisonSound();
+        }
         player.handlePoisoning(sound); // Добавляем вызов обработки
     }
 
     private void handleEnergyFood(Player player, SoundManager sound) {
         player.modifyCalories(GameConfig.ENERGY_FOOD_CALORIES);
         sound.playEatSound();
+        sound.playEnergySound();
     }
 
     /**

@@ -2,10 +2,8 @@ package ru.kaevuezhor.leha.sound;
 
 import javax.sound.sampled.*;
 
-import javazoom.jl.player.Player;
 import ru.kaevuezhor.leha.game.GameConfig;
 
-import java.io.*;
 import java.net.URL;
 import java.util.Objects;
 
@@ -20,6 +18,11 @@ public class SoundManager {
     private Clip themeSound;       // Фоновая музыка
     private Clip healthySound; // Новая переменная для звука healthy
 
+    private Clip energySound; //
+
+    private Clip regularPoisonSound;
+
+
     /**
      * Загружает все звуковые ресурсы
      */
@@ -29,7 +32,8 @@ public class SoundManager {
         loadClip("/blup.wav", "explosion");
         loadClip("/theme.wav", "theme");
         loadClip("/healthy.wav", "healthy"); // Новая строка
-
+        loadClip("/energy.wav", "energy"); // Новая строка
+        loadClip("/poison_regular.wav", "regular_poison");
     }
 
     // Загружает звуковой файл в Clip
@@ -59,6 +63,14 @@ public class SoundManager {
                     themeSound = AudioSystem.getClip();
                     themeSound.open(audio);
                 }
+                case "energy" -> {
+                    energySound = AudioSystem.getClip();
+                    energySound.open(audio);
+                }
+                case "regular_poison" -> {
+                    regularPoisonSound = AudioSystem.getClip();
+                    regularPoisonSound.open(audio);
+                }
             }
         } catch (Exception e) {
             System.err.println("Ошибка загрузки звука: " + e.getMessage());
@@ -86,6 +98,14 @@ public class SoundManager {
 
     public void playHealthySound() {
         playClip(healthySound);
+    }
+
+    public void playEnergySound() {
+        playClip(energySound);
+    }
+
+    public void playRegularPoisonSound() {
+        playClip(regularPoisonSound);
     }
 
     // Общий метод воспроизведения звука
